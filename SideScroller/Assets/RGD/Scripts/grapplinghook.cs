@@ -156,9 +156,11 @@ public class grapplinghook : MonoBehaviour
 
     void fireGun()
     {
-        GameObject newShot = Instantiate(bullets, transform);
+        GameObject newShot = Instantiate(bullets);
 
         Vector3 direction = Input.mousePosition - transform.position;
+        Vector3 startPoint = transform.forward.normalized;
+        newShot.transform.position = transform.position + startPoint;
 
         newShot.SetActive(true);
         newShot.GetComponent<Rigidbody>().AddForce(direction * bulletSpeed);

@@ -230,7 +230,10 @@ public class ShootingEnemies : MonoBehaviour
 
     void shootAtPlayer()
     {
-        GameObject newShot = Instantiate(bullets, transform);
+        GameObject newShot = Instantiate(bullets);
+
+        Vector3 startPoint = transform.right.normalized * -1;
+        newShot.transform.position = transform.position + startPoint;
 
         Vector3 direction = player.transform.position - transform.position;
 
