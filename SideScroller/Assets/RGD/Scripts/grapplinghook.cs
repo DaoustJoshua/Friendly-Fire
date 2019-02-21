@@ -15,7 +15,7 @@ public class grapplinghook : MonoBehaviour
     public LayerMask mask;
     public float speed = 10.0f;
     private float step = 0.0f;
-    private bool grappled = false;
+    public bool grappled = false;
 
     //gun additions
     public GameObject bullets;
@@ -24,8 +24,13 @@ public class grapplinghook : MonoBehaviour
     public bool reloading;
 
     private float reload;
+    public HingeJoint hJoint;
+    float hingeLength = 0f;
+    Rigidbody body;
+    public float transitionLength = 1f;
+    float transitionStartTime = 0f;
 
-    
+
 
     // Use this for initialization
     void Start()
@@ -38,25 +43,29 @@ public class grapplinghook : MonoBehaviour
     {
 
         //if (Input.GetMouseButtonDown(0))
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetMouseButtonDown(1))
         {
-            Grapple();
+            if (!grappled)
+            {
+                Grapple();
+            }
         }
 
-        if (grappled)
+        if (grappled && Input.GetKeyDown(KeyCode.E))
         {
             MoveTo();
         }
 
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetMouseButtonDown(1))
         {
-            line.SetPosition(0, transform.position);
+            //line.SetPosition(0, transform.position);
         }
 
-        if (Input.GetKeyUp(KeyCode.E))
+        if (Input.GetMouseButtonUp(1))
         {
             line.enabled = false;
             grappled = false;
+            Destroy(hJoint.gameObject.GetComponent<HingeJoint>());
         }
 
         //gun stuff
@@ -86,16 +95,27 @@ public class grapplinghook : MonoBehaviour
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
+        RaycastHit hit;
 
-        if (hit.collider.tag == "Terrain")
+        if (Physics.Raycast(ray, out hit))
         {
-            target = hit.transform.position;
-            grappled = true;
+            if (hit.collider.tag == "Terrain") // if hit is terrain then create joint and set information
+            {
+                target = hit.transform.position;
+                grappled = true;
 
-            line.enabled = true;
-            line.SetPosition(0, transform.position);
-            line.SetPosition(1, hit.point);
+                line.enabled = true;
+                line.SetPosition(0, transform.position);
+                line.SetPosition(1, hit.point);
+                hit.transform.gameObject.AddComponent<HingeJoint>();
+                hJoint = hit.transform.gameObject.GetComponent<HingeJoint>();
+                hJoint.connectedBody = GetComponent<Rigidbody>();
+                hJoint.anchor = transform.InverseTransformPoint(hit.collider.transform.position);
+                hingeLength = hJoint.anchor.magnitude;
+                hJoint.axis = transform.InverseTransformDirection(Vector3.forward);
+                hJoint.autoConfigureConnectedAnchor = false;
+                hJoint.massScale = 50;
+            }
 
             //line.GetComponent<roperatio>().grabPos = hit.point;
         }

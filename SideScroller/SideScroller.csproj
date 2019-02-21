@@ -322,6 +322,7 @@
     <Compile Include="Assets\RGD\Scripts\EnemyAI.cs" />
     <Compile Include="Assets\RGD\Scripts\Goal.cs" />
     <Compile Include="Assets\RGD\Scripts\grapplinghook.cs" />
+    <Compile Include="Assets\RGD\Scripts\grapplinghookSpring.cs" />
     <Compile Include="Assets\RGD\Scripts\GUIManager.cs" />
     <Compile Include="Assets\RGD\Scripts\Hazard.cs" />
     <Compile Include="Assets\RGD\Scripts\Health.cs" />
